@@ -3,25 +3,25 @@ var url = require('url');
 
 var args = process.argv;
 var urlServer = args[2];
+var methodToUse = args[4].toUpperCase();
+var portToUse = args[6];
 
+if(portToUse === undefined){
+  portToUse = 80;
+}
 
 //arguments 8 --method method --port port# --headers
 if(urlServer === undefined){
   console.log('Type out the following format in the command line.');
   console.log('[node] [client.js] [url/host] [--method] [method] [--port] [port] [--headers]');
-  console.log('The first argument is running the javascript file through node.');
-  console.log('The second argument is the javascript file that you want to run.');
-  console.log('The third argument is the url/host that you want to obtain an HTTP response from.');
-  console.log('The fourth argument is the CLI option that you would want to use.');
-  console.log('CLI options: GET/POST/PUT/DELETE/HEAD/OPTIONS');
 } else{
   var socket = new net.Socket();
 
-  socket.connect({ port: 80, host: urlServer}, () => {
+  socket.connect({ port: portToUse, host: urlServer}, () => {
     console.log('Connected to server!');
     var dateNow = new Date();
     var UTCDate = dateNow.toUTCString();
-    socket.write('GET / HTTP/1.1\n' +
+    socket.write(methodToUse + ' / HTTP/1.1\n' +
                  'Host: ' + urlServer + '\n' +
                  'Connection: close\n' +
                  'Accept: text/html, application/json\n' +
@@ -34,7 +34,14 @@ if(urlServer === undefined){
   });
 
   socket.on('data', (data) => {
-    console.log(data.toString());
+    if(args[7] === '--headers'){
+      var dataContent = data.toString().split('\n');
+      var headerBodySeperator = [];
+      headerBodySeperator.push(dataContent.indexOf('\r'));
+      console.log(dataContent.slice(0, headerBodySeperator[0]).join('\n'));
+    }else{
+      console.log(data.toString());
+    }
     socket.end();
   });
 
