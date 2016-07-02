@@ -27,7 +27,7 @@ if(args.length === 3) {
 }
 
 //arguments 8 --method method --port port# --headers
-if(urlServer === undefined){
+if(urlServer === undefined || args.indexOf('--help') !== -1){
   console.log('Type out the following format in the command line.');
   console.log('[node] [client.js] [url/host] [--method] [method] [--port] [port] [--headers]');
 } else{
