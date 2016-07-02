@@ -3,11 +3,27 @@ var url = require('url');
 
 var args = process.argv;
 var urlServer = args[2];
-var methodToUse = args[4].toUpperCase();
-var portToUse = args[6];
+var methodToUse;
+var portToUse;
 
-if(portToUse === undefined){
+if(args.length === 3) {
+  methodToUse = 'GET';
   portToUse = 80;
+}else if(args.length === 4) {
+  methodToUse = 'GET';
+  portToUse = 80;
+}else if(args.length === 5) {
+  methodToUse = args[4].toUpperCase();
+  portToUse = 80;
+}else if(args.length === 6) {
+  methodToUse = args[4].toUpperCase();
+  portToUse = 80;
+}else if(args.length === 7) {
+  methodToUse = args[4].toUpperCase();
+  portToUse = args[6];
+}else if(args.length === 8) {
+  methodToUse = args[4].toUpperCase();
+  portToUse = args[6];
 }
 
 //arguments 8 --method method --port port# --headers
@@ -34,7 +50,7 @@ if(urlServer === undefined){
   });
 
   socket.on('data', (data) => {
-    if(args[7] === '--headers'){
+    if(args[7] === '--headers' || args[5] === '--headers'){
       var dataContent = data.toString().split('\n');
       var headerBodySeperator = [];
       headerBodySeperator.push(dataContent.indexOf('\r'));
@@ -43,6 +59,10 @@ if(urlServer === undefined){
       console.log(data.toString());
     }
     socket.end();
+  });
+
+  socket.on('error', () => {
+    console.log('This host cannot be reached.');
   });
 
   socket.on('end', () => {
