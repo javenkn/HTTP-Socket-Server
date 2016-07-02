@@ -11,7 +11,6 @@ var server = net.createServer(function (socket) { //readable socket
     var UTCDate = dateNow.toUTCString();
 
     var requestMethod = data.toString().split('\n')[0];
-    console.log(requestMethod);
     var httpVers = requestMethod.slice(-9).trim();
     var path = requestMethod.split(' ')[1].slice(1);
     if(path === ''){
