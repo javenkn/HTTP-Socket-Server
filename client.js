@@ -44,9 +44,9 @@ if(urlServer === undefined || args.indexOf('--help') !== -1){
     var dataContent = data.toString().split('\n');
     var statusCode = dataContent[0].slice(9,11);
     if(statusCode === '40') {
-      console.log('404: Not Found. 403: Forbidden.');
+      console.log('There is a client error.');
     }else if(statusCode === '50') {
-      console.log('500: Internal Server Error.');
+      console.log('There is a server error.');
     }
 
     if(args[7] === '--headers' || args[5] === '--headers'){
