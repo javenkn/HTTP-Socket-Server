@@ -11,6 +11,7 @@ var server = net.createServer(function (socket) { //readable socket
     var UTCDate = dateNow.toUTCString();
 
     var requestMethod = data.toString().split('\n')[0];
+    var method = requestMethod.split(' ')[0];
     var httpVers = requestMethod.slice(-9).trim();
     var path = requestMethod.split(' ')[1].slice(1);
     if(path === ''){
@@ -27,13 +28,20 @@ var server = net.createServer(function (socket) { //readable socket
               fs.read(fileData, buffer, 0, buffer.length, null, function (error, bytesRead, buffer) {
                 if(error) throw error;
                 var htmlData = buffer.toString('utf8', 0, buffer.length);
-                socket.write(httpVers + statusLine  + '\r\n' +
+                if(method === 'GET') {
+                  socket.write(httpVers + statusLine  + '\r\n' +
+                                   'Date: ' + UTCDate + '\r\n' +
+                                   'Server: localhost' + '\r\n' +
+                                   'Content-Length: ' + bytesRead + '\n\r\n' +
+                                   htmlData
+                                   );
+                }else if(method === 'HEAD') {
+                  socket.write(httpVers + statusLine  + '\r\n' +
                                  'Date: ' + UTCDate + '\r\n' +
                                  'Server: localhost' + '\r\n' +
-                                 'Content-Length: ' + bytesRead + '\n\r\n' +
-                                 htmlData
+                                 'Content-Length: ' + bytesRead
                                  );
-
+                }
                 socket.end();
               });
             });
@@ -49,14 +57,20 @@ var server = net.createServer(function (socket) { //readable socket
               fs.read(fileData, buffer, 0, buffer.length, null, function (error, bytesRead, buffer) {
                 if(error) throw error;
                 var htmlData = buffer.toString('utf8', 0, buffer.length);
-                socket.write(httpVers + errorStatusLine  + '\n' +
-                                 'Date: ' + UTCDate + '\n' +
-                                 'Server: localhost' + '\n' +
-                                 'Content-Length: ' + bytesRead + '\n\n' +
-                                 htmlData
+                if(method === 'GET') {
+                  socket.write(httpVers + errorStatusLine  + '\r\n' +
+                                   'Date: ' + UTCDate + '\r\n' +
+                                   'Server: localhost' + '\r\n' +
+                                   'Content-Length: ' + bytesRead + '\n\r\n' +
+                                   htmlData
+                                   );
+                }else if(method === 'HEAD') {
+                  socket.write(httpVers + errorStatusLine  + '\r\n' +
+                                 'Date: ' + UTCDate + '\r\n' +
+                                 'Server: localhost' + '\r\n' +
+                                 'Content-Length: ' + bytesRead
                                  );
-
-
+                }
                 socket.end();
               });
             });
