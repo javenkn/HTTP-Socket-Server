@@ -6,22 +6,13 @@ var urlServer = args[2];
 var methodToUse;
 var portToUse;
 
-if(args.length === 3) {
+if(args.length === 3 || args.length === 4 ) {
   methodToUse = 'GET';
   portToUse = 80;
-}else if(args.length === 4) {
-  methodToUse = 'GET';
-  portToUse = 80;
-}else if(args.length === 5) {
+}else if(args.length === 5 || args.length === 6) {
   methodToUse = args[4].toUpperCase();
   portToUse = 80;
-}else if(args.length === 6) {
-  methodToUse = args[4].toUpperCase();
-  portToUse = 80;
-}else if(args.length === 7) {
-  methodToUse = args[4].toUpperCase();
-  portToUse = args[6];
-}else if(args.length === 8) {
+}else if(args.length === 7 || args.length === 8) {
   methodToUse = args[4].toUpperCase();
   portToUse = args[6];
 }
