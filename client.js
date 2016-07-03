@@ -50,11 +50,19 @@ if(urlServer === undefined || args.indexOf('--help') !== -1){
   });
 
   socket.on('data', (data) => {
-    if(args[7] === '--headers' || args[5] === '--headers'){
-      var dataContent = data.toString().split('\n');
-      var headerBodySeperator = [];
-      headerBodySeperator.push(dataContent.indexOf('\r'));
-      console.log(dataContent.slice(0, headerBodySeperator[0]).join('\n'));
+    if(urlServer === 'localhost' && methodToUse === 'HEAD'){
+      var headDataContent = data.toString().split('\n');
+      console.log(headDataContent.slice(0, 4).join('\n'));
+    }else if(args[7] === '--headers' || args[5] === '--headers'){
+      if(urlServer === 'localhost'){
+        var localDataContent = data.toString().split('\n');
+        console.log(localDataContent.slice(0, 4).join('\n'));
+      }else{
+        var dataContent = data.toString().split('\n');
+        var headerBodySeperator = [];
+        headerBodySeperator.push(dataContent.indexOf('\r'));
+        console.log(dataContent.slice(0, headerBodySeperator[0]).join('\n'));
+      }
     }else{
       console.log(data.toString());
     }
