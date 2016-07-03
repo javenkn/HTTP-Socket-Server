@@ -27,10 +27,10 @@ var server = net.createServer(function (socket) { //readable socket
               fs.read(fileData, buffer, 0, buffer.length, null, function (error, bytesRead, buffer) {
                 if(error) throw error;
                 var htmlData = buffer.toString('utf8', 0, buffer.length);
-                socket.write(httpVers + statusLine  + '\n' +
-                                 'Date: ' + UTCDate + '\n' +
-                                 'Server: localhost' + '\n' +
-                                 'Content-Length: ' + bytesRead + '\n\n' +
+                socket.write(httpVers + statusLine  + '\r\n' +
+                                 'Date: ' + UTCDate + '\r\n' +
+                                 'Server: localhost' + '\r\n' +
+                                 'Content-Length: ' + bytesRead + '\n\r\n' +
                                  htmlData
                                  );
 

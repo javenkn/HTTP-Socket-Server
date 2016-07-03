@@ -41,27 +41,31 @@ if(urlServer === undefined || args.indexOf('--help') !== -1){
   });
 
   socket.on('data', (data) => {
-    if(urlServer === 'localhost' && methodToUse === 'HEAD'){
-      var headDataContent = data.toString().split('\n');
-      console.log(headDataContent.slice(0, 4).join('\n'));
-    }else if(args[7] === '--headers' || args[5] === '--headers'){
-      if(urlServer === 'localhost'){
-        var localDataContent = data.toString().split('\n');
-        console.log(localDataContent.slice(0, 4).join('\n'));
-      }else{
-        var dataContent = data.toString().split('\n');
+    var dataContent = data.toString().split('\n');
+    var statusCode = dataContent[0].slice(9,11);
+    if(statusCode === '40') {
+      console.log('404: Not Found. 403: Forbidden.');
+    }else if(statusCode === '50') {
+      console.log('500: Internal Server Error.');
+    }
+
+    if(args[7] === '--headers' || args[5] === '--headers'){
         var headerBodySeperator = [];
         headerBodySeperator.push(dataContent.indexOf('\r'));
         console.log(dataContent.slice(0, headerBodySeperator[0]).join('\n'));
-      }
     }else{
       console.log(data.toString());
     }
     socket.end();
   });
 
-  socket.on('error', () => {
-    console.log('This host cannot be reached.');
+  socket.on('error', (error) => {
+    if(error.code === 'ENOTFOUND'){ // Handle the case where the host can not be reached
+      console.log('This host cannot be reached.');
+    }else if(error.code === 'ECONNREFUSED'){
+      // Handle the case where the host is found, and not listening on port 80
+      console.log('Host is found but not listening on port 80.');
+    }
   });
 
   socket.on('end', () => {
